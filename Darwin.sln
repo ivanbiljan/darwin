@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darwin", "Darwin\Darwin.csproj", "{1C38101B-2F5D-4E59-89E6-C6C9174CEBC5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darwin.UnitTests", "tests\Darwin.UnitTests\Darwin.UnitTests.csproj", "{456A047F-5D3C-485F-9889-57E46DD97B0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{1C38101B-2F5D-4E59-89E6-C6C9174CEBC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C38101B-2F5D-4E59-89E6-C6C9174CEBC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C38101B-2F5D-4E59-89E6-C6C9174CEBC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{456A047F-5D3C-485F-9889-57E46DD97B0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{456A047F-5D3C-485F-9889-57E46DD97B0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{456A047F-5D3C-485F-9889-57E46DD97B0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{456A047F-5D3C-485F-9889-57E46DD97B0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

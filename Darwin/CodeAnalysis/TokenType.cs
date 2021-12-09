@@ -1,11 +1,21 @@
-﻿namespace Darwin.CodeAnalysis {
-    public enum TokenType {
+﻿namespace Darwin.CodeAnalysis
+{
+    public enum TokenType
+    {
+        Space,
         Number,
         PlusSign,
         MinusSign,
         AsteriskSign,
         SlashSign,
         LeftParentheses,
-        RightParentheses
+        RightParentheses,
+        Dot,
+        Colon,
+        Semicolon,
+        Unexpected,
+        LeftCurlyBrace,
+        RightCurlyBrace,
+        EndOfFile
     }
 }
