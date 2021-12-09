@@ -1,30 +1,12 @@
-﻿namespace Darwin.CodeAnalysis
+﻿using System;
+
+namespace Darwin.CodeAnalysis
 {
     /// <summary>
-    ///     Represents a syntax token. The smallest lexical unit that has meaning.
+    /// Represents a syntax token. The smallest lexical unit that has meaning.
     /// </summary>
-    internal sealed class SyntaxToken
-    {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="SyntaxToken" /> class with the specified <see cref="TokenType" /> and
-        ///     value.
-        /// </summary>
-        /// <param name="type">The type of token.</param>
-        /// <param name="value">The value.</param>
-        public SyntaxToken(TokenType type, object? value = null)
-        {
-            Type = type;
-            Value = value;
-        }
-
-        /// <summary>
-        ///     Gets or sets the type of token.
-        /// </summary>
-        public TokenType Type { get; }
-
-        /// <summary>
-        ///     Gets or sets the value.
-        /// </summary>
-        public object? Value { get; }
-    }
+    /// <param name="Type">The type of token.</param>
+    /// <param name="Lexeme">A string representation of the parsed lexeme.</param>
+    /// <param name="Value">The value associated with this token.</param>
+    internal record SyntaxToken(TokenType Type, string Lexeme, object? Value = null);
 }

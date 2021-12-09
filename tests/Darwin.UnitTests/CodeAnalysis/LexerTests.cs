@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Darwin.CodeAnalysis;
 using Xunit;
 
-namespace Darwin.UnitTests
+namespace Darwin.UnitTests.CodeAnalysis
 {
     public sealed class LexerTests
     {
@@ -11,26 +11,26 @@ namespace Darwin.UnitTests
         {
             new object[] {"1 + 2 * 3456 * (4 / 20)", new SyntaxToken[]
             {
-                new(TokenType.Number, 1L),
+                new(TokenType.Number, "1", 1L),
                 new(TokenType.Space, " "),
                 new(TokenType.PlusSign, "+"),
                 new(TokenType.Space, " "),
-                new(TokenType.Number, 2L),
+                new(TokenType.Number, "2", 2L),
                 new(TokenType.Space, " "),
                 new(TokenType.AsteriskSign, "*"),
                 new(TokenType.Space, " "),
-                new(TokenType.Number, 3456L),
+                new(TokenType.Number, "3456", 3456L),
                 new(TokenType.Space, " "),
                 new(TokenType.AsteriskSign, "*"),
                 new(TokenType.Space, " "),
                 new(TokenType.LeftParentheses, "("),
-                new(TokenType.Number, 4L),
+                new(TokenType.Number, "4", 4L),
                 new(TokenType.Space, " "),
                 new(TokenType.SlashSign, "/"),
                 new(TokenType.Space, " "),
-                new(TokenType.Number, 20L),
+                new(TokenType.Number, "20", 20L),
                 new(TokenType.RightParentheses, ")"),
-                new(TokenType.EndOfFile),
+                new(TokenType.EndOfFile, "EOF"),
             }}
         };
 

@@ -25,12 +25,12 @@ namespace Darwin.CodeAnalysis
         {
             if (_position >= _input.Length)
             {
-                return new SyntaxToken(TokenType.EndOfFile);
+                return new SyntaxToken(TokenType.EndOfFile, "EOF");
             }
 
             switch (_input[_position++])
             {
-                case var digit when digit >= '0' && digit <= '9':
+                case <= '9' and >= '0':
                 {
                     var start = _position - 1;
                     while (char.IsDigit(_input[_position]))
@@ -38,7 +38,8 @@ namespace Darwin.CodeAnalysis
                         ++_position;
                     }
 
-                    return new SyntaxToken(TokenType.Number, long.Parse(_input[start.._position]));
+                    var stringRepresentation = _input[start.._position].ToString();
+                    return new SyntaxToken(TokenType.Number, stringRepresentation, long.Parse(stringRepresentation));
                 }
                 case var c when char.IsWhiteSpace(c):
                 {
