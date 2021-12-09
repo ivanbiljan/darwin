@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Darwin.CodeAnalysis;
+using Darwin.Syntax;
 using Xunit;
 
 namespace Darwin.UnitTests.CodeAnalysis
@@ -9,29 +9,32 @@ namespace Darwin.UnitTests.CodeAnalysis
     {
         public static IEnumerable<object[]> ParseData = new object[][]
         {
-            new object[] {"1 + 2 * 3456 * (4 / 20)", new SyntaxToken[]
+            new object[]
             {
-                new(TokenType.Number, "1", 1L),
-                new(TokenType.Space, " "),
-                new(TokenType.PlusSign, "+"),
-                new(TokenType.Space, " "),
-                new(TokenType.Number, "2", 2L),
-                new(TokenType.Space, " "),
-                new(TokenType.AsteriskSign, "*"),
-                new(TokenType.Space, " "),
-                new(TokenType.Number, "3456", 3456L),
-                new(TokenType.Space, " "),
-                new(TokenType.AsteriskSign, "*"),
-                new(TokenType.Space, " "),
-                new(TokenType.LeftParentheses, "("),
-                new(TokenType.Number, "4", 4L),
-                new(TokenType.Space, " "),
-                new(TokenType.SlashSign, "/"),
-                new(TokenType.Space, " "),
-                new(TokenType.Number, "20", 20L),
-                new(TokenType.RightParentheses, ")"),
-                new(TokenType.EndOfFile, "EOF"),
-            }}
+                "1 + 2 * 3456 * (4 / 20)", new SyntaxToken[]
+                {
+                    new(TokenType.Number, default, "1", 1L),
+                    new(TokenType.Space, default, " "),
+                    new(TokenType.PlusSign, default, "+"),
+                    new(TokenType.Space, default, " "),
+                    new(TokenType.Number, default, "2", 2L),
+                    new(TokenType.Space, default, " "),
+                    new(TokenType.AsteriskSign, default, "*"),
+                    new(TokenType.Space, default, " "),
+                    new(TokenType.Number, default, "3456", 3456L),
+                    new(TokenType.Space, default, " "),
+                    new(TokenType.AsteriskSign, default, "*"),
+                    new(TokenType.Space, default, " "),
+                    new(TokenType.LeftParentheses, default, "("),
+                    new(TokenType.Number, default, "4", 4L),
+                    new(TokenType.Space, default, " "),
+                    new(TokenType.SlashSign, default, "/"),
+                    new(TokenType.Space, default, " "),
+                    new(TokenType.Number, default, "20", 20L),
+                    new(TokenType.RightParentheses, default, ")"),
+                    new(TokenType.EndOfFile, default, "EOF"),
+                }
+            }
         };
 
         [Fact]
@@ -55,6 +58,7 @@ namespace Darwin.UnitTests.CodeAnalysis
             {
                 var actualToken = lexer.Emit();
                 Assert.Equal(expectedToken.Type, actualToken.Type);
+                Assert.Equal(expectedToken.Lexeme, actualToken.Lexeme);
                 Assert.Equal(expectedToken.Value, actualToken.Value);
             }
         }

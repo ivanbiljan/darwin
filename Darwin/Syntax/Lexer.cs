@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Darwin.CodeAnalysis
+namespace Darwin.Syntax
 {
     internal ref struct Lexer
     {
@@ -25,7 +25,8 @@ namespace Darwin.CodeAnalysis
         {
             if (_position >= _input.Length)
             {
-                return new SyntaxToken(TokenType.EndOfFile, "EOF");
+                return new SyntaxToken(TokenType.EndOfFile, new SourceLocation(0, new TextSpan(_input.Length, 0)),
+                    "EOF");
             }
 
             switch (_input[_position++])
@@ -39,7 +40,9 @@ namespace Darwin.CodeAnalysis
                     }
 
                     var stringRepresentation = _input[start.._position].ToString();
-                    return new SyntaxToken(TokenType.Number, stringRepresentation, long.Parse(stringRepresentation));
+                    return new SyntaxToken(TokenType.Number,
+                        new SourceLocation(0, new TextSpan(start, _position - start)), stringRepresentation,
+                        long.Parse(stringRepresentation));
                 }
                 case var c when char.IsWhiteSpace(c):
                 {
@@ -49,20 +52,28 @@ namespace Darwin.CodeAnalysis
                         ++_position;
                     }
 
-                    return new SyntaxToken(TokenType.Space, new string(' ', _position - start));
+                    return new SyntaxToken(TokenType.Space,
+                        new SourceLocation(0, new TextSpan(start, _position - start)),
+                        new string(' ', _position - start));
                 }
                 case '+':
-                    return new SyntaxToken(TokenType.PlusSign, "+");
+                    return new SyntaxToken(TokenType.PlusSign, new SourceLocation(0, new TextSpan(_position - 1, 1)),
+                        "+");
                 case '-':
-                    return new SyntaxToken(TokenType.MinusSign, "-");
+                    return new SyntaxToken(TokenType.MinusSign, new SourceLocation(0, new TextSpan(_position - 1, 1)),
+                        "-");
                 case '*':
-                    return new SyntaxToken(TokenType.AsteriskSign, "*");
+                    return new SyntaxToken(TokenType.AsteriskSign,
+                        new SourceLocation(0, new TextSpan(_position - 1, 1)), "*");
                 case '/':
-                    return new SyntaxToken(TokenType.SlashSign, "/");
+                    return new SyntaxToken(TokenType.SlashSign, new SourceLocation(0, new TextSpan(_position - 1, 1)),
+                        "/");
                 case '(':
-                    return new SyntaxToken(TokenType.LeftParentheses, "(");
+                    return new SyntaxToken(TokenType.LeftParentheses,
+                        new SourceLocation(0, new TextSpan(_position - 1, 1)), "(");
                 case ')':
-                    return new SyntaxToken(TokenType.RightParentheses, ")");
+                    return new SyntaxToken(TokenType.RightParentheses,
+                        new SourceLocation(0, new TextSpan(_position - 1, 1)), ")");
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_input), $"Unsupported token {_input[_position]}");
             }
