@@ -17,6 +17,5 @@
         LeftCurlyBrace,
         RightCurlyBrace,
         EndOfFile,
-        BinaryExpression
     }
 }

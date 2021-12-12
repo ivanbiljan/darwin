@@ -7,5 +7,5 @@
     /// <param name="Lexeme">A string representation of the parsed lexeme.</param>
     /// <param name="Value">The value associated with this token.</param>
     internal record SyntaxToken(TokenType Type, SourceLocation LocationInformation, string Lexeme,
-        object? Value = null);
+        object? Value = null) : SyntaxNode;
 }
