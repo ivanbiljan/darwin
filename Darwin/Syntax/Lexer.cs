@@ -2,6 +2,8 @@
 
 namespace Darwin.Syntax
 {
+    // TODO: line number support
+    
     internal ref struct Lexer
     {
         private readonly ReadOnlySpan<char> _input;
@@ -69,10 +71,10 @@ namespace Darwin.Syntax
                     return new SyntaxToken(TokenType.SlashSign, new SourceLocation(0, new TextSpan(_position - 1, 1)),
                         "/");
                 case '(':
-                    return new SyntaxToken(TokenType.LeftParentheses,
+                    return new SyntaxToken(TokenType.LeftParenthesis,
                         new SourceLocation(0, new TextSpan(_position - 1, 1)), "(");
                 case ')':
-                    return new SyntaxToken(TokenType.RightParentheses,
+                    return new SyntaxToken(TokenType.RightParenthesis,
                         new SourceLocation(0, new TextSpan(_position - 1, 1)), ")");
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_input), $"Unsupported token {_input[_position]}");

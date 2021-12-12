@@ -25,13 +25,13 @@ namespace Darwin.UnitTests.CodeAnalysis
                     new(TokenType.Space, default, " "),
                     new(TokenType.AsteriskSign, default, "*"),
                     new(TokenType.Space, default, " "),
-                    new(TokenType.LeftParentheses, default, "("),
+                    new(TokenType.LeftParenthesis, default, "("),
                     new(TokenType.Number, default, "4", 4L),
                     new(TokenType.Space, default, " "),
                     new(TokenType.SlashSign, default, "/"),
                     new(TokenType.Space, default, " "),
                     new(TokenType.Number, default, "20", 20L),
-                    new(TokenType.RightParentheses, default, ")"),
+                    new(TokenType.RightParenthesis, default, ")"),
                     new(TokenType.EndOfFile, default, "EOF"),
                 }
             }

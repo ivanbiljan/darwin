@@ -8,14 +8,15 @@
         MinusSign,
         AsteriskSign,
         SlashSign,
-        LeftParentheses,
-        RightParentheses,
+        LeftParenthesis,
+        RightParenthesis,
         Dot,
         Colon,
         Semicolon,
         Unexpected,
         LeftCurlyBrace,
         RightCurlyBrace,
-        EndOfFile
+        EndOfFile,
+        BinaryExpression
     }
 }
