@@ -39,13 +39,33 @@ namespace Darwin.Syntax
     internal sealed class Parser
     {
         private readonly IList<SyntaxToken> _tokens;
-        private int _tokenIndex;
+        private int _currentTokenIndex = 0;
 
         public Parser(IList<SyntaxToken> tokens)
         {
             _tokens = tokens;
         }
 
-        private SyntaxToken? Current => _tokens.ElementAtOrDefault(_tokenIndex);
+        private SyntaxToken? Current => _tokens.ElementAtOrDefault(_currentTokenIndex);
+
+        public LiteralExpression ParseLiteral()
+        {
+            return new LiteralExpression(_tokens[_currentTokenIndex]);
+        }
+    }
+
+    internal sealed class Evaluator
+    {
+        private readonly SyntaxNode _root;
+
+        public Evaluator(SyntaxNode root)
+        {
+            _root = root;
+        }
+
+        public object? Evaluate(SyntaxNode expression)
+        {
+            return null;
+        }
     }
 }

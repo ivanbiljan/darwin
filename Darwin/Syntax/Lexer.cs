@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace Darwin.Syntax
 {
@@ -19,11 +21,25 @@ namespace Darwin.Syntax
             _position = 0;
         }
 
+        public IList<SyntaxToken> TokenizeInput()
+        {
+            var tokens = new List<SyntaxToken>();
+                
+            SyntaxToken currentToken;
+            do
+            {
+                currentToken = EmitToken();
+                tokens.Add(currentToken);
+            } while (currentToken.Type != TokenType.EndOfFile);
+
+            return tokens;
+        }
+
         /// <summary>
         ///     Scans the input string for the next token and emits it.
         /// </summary>
         /// <returns>The next token.</returns>
-        public SyntaxToken Emit()
+        public SyntaxToken EmitToken()
         {
             if (_position >= _input.Length)
             {
@@ -31,12 +47,12 @@ namespace Darwin.Syntax
                     "EOF");
             }
 
-            switch (_input[_position++])
+            switch (_input[_position])
             {
                 case <= '9' and >= '0':
                 {
-                    var start = _position - 1;
-                    while (char.IsDigit(_input[_position]))
+                    var start = _position;
+                    while (_position < _input.Length && char.IsDigit(_input[_position]))
                     {
                         ++_position;
                     }
@@ -48,8 +64,8 @@ namespace Darwin.Syntax
                 }
                 case var c when char.IsWhiteSpace(c):
                 {
-                    var start = _position - 1;
-                    while (char.IsWhiteSpace(_input[_position]))
+                    var start = _position;
+                    while (_position < _input.Length && char.IsWhiteSpace(_input[_position]))
                     {
                         ++_position;
                     }
@@ -59,23 +75,23 @@ namespace Darwin.Syntax
                         new string(' ', _position - start));
                 }
                 case '+':
-                    return new SyntaxToken(TokenType.PlusSign, new SourceLocation(0, new TextSpan(_position - 1, 1)),
+                    return new SyntaxToken(TokenType.PlusSign, new SourceLocation(0, new TextSpan(_position++, 1)),
                         "+");
                 case '-':
-                    return new SyntaxToken(TokenType.MinusSign, new SourceLocation(0, new TextSpan(_position - 1, 1)),
+                    return new SyntaxToken(TokenType.MinusSign, new SourceLocation(0, new TextSpan(_position++, 1)),
                         "-");
                 case '*':
                     return new SyntaxToken(TokenType.AsteriskSign,
-                        new SourceLocation(0, new TextSpan(_position - 1, 1)), "*");
+                        new SourceLocation(0, new TextSpan(_position++, 1)), "*");
                 case '/':
-                    return new SyntaxToken(TokenType.SlashSign, new SourceLocation(0, new TextSpan(_position - 1, 1)),
+                    return new SyntaxToken(TokenType.SlashSign, new SourceLocation(0, new TextSpan(_position++, 1)),
                         "/");
                 case '(':
                     return new SyntaxToken(TokenType.LeftParenthesis,
-                        new SourceLocation(0, new TextSpan(_position - 1, 1)), "(");
+                        new SourceLocation(0, new TextSpan(_position++, 1)), "(");
                 case ')':
                     return new SyntaxToken(TokenType.RightParenthesis,
-                        new SourceLocation(0, new TextSpan(_position - 1, 1)), ")");
+                        new SourceLocation(0, new TextSpan(_position++, 1)), ")");
                 default:
                     throw new ArgumentOutOfRangeException(nameof(_input), $"Unsupported token {_input[_position]}");
             }
