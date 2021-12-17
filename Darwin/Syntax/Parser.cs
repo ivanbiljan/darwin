@@ -29,6 +29,19 @@ namespace Darwin.Syntax
         }
     }
 
+    internal sealed record BinaryExpression(DarwinExpression LeftOperand, SyntaxToken Operator,
+        DarwinExpression RightOperand) : DarwinExpression
+    {
+        public override DarwinExpressionType Type => DarwinExpressionType.Binary;
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return LeftOperand;
+            yield return Operator;
+            yield return RightOperand;
+        }
+    }
+
     internal enum DarwinExpressionType
     {
         Unary,
@@ -48,9 +61,16 @@ namespace Darwin.Syntax
 
         private SyntaxToken? Current => _tokens.ElementAtOrDefault(_currentTokenIndex);
 
+        private SyntaxToken? Lookahead => _tokens.ElementAtOrDefault(_currentTokenIndex + 1);
+
+        public BinaryExpression ParseBinaryExpression()
+        {
+            return default;
+        }
+
         public LiteralExpression ParseLiteral()
         {
-            return new LiteralExpression(_tokens[_currentTokenIndex]);
+            return new LiteralExpression(_tokens[_currentTokenIndex++]);
         }
     }
 
@@ -66,6 +86,11 @@ namespace Darwin.Syntax
         public object? Evaluate(SyntaxNode expression)
         {
             return null;
+        }
+
+        private object? EvaluateBinaryExpression(BinaryExpression expression)
+        {
+            return default;
         }
     }
 }
