@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Darwin.Syntax
@@ -49,6 +50,18 @@ namespace Darwin.Syntax
         Literal
     }
 
+    internal sealed class SyntaxTree
+    {
+        public SyntaxTree(SyntaxNode root, SyntaxToken endOfFile)
+        {
+            Root = root;
+            EndOfFile = endOfFile;
+        }
+
+        public SyntaxToken EndOfFile { get; }
+        public SyntaxNode Root { get; }
+    }
+
     internal sealed class Parser
     {
         private readonly IList<SyntaxToken> _tokens;
@@ -56,21 +69,52 @@ namespace Darwin.Syntax
 
         public Parser(IList<SyntaxToken> tokens)
         {
-            _tokens = tokens;
+            _tokens = tokens.Where(t => t.Type != TokenType.Space).ToList();
         }
 
         private SyntaxToken? Current => _tokens.ElementAtOrDefault(_currentTokenIndex);
 
         private SyntaxToken? Lookahead => _tokens.ElementAtOrDefault(_currentTokenIndex + 1);
 
-        public BinaryExpression ParseBinaryExpression()
+        private SyntaxToken AssertToken(TokenType tokenType)
         {
-            return default;
+            if (_currentTokenIndex >= _tokens.Count)
+            {
+                throw new Exception("Cannot read past input length");
+            }
+
+            var token = _tokens.ElementAt(_currentTokenIndex);
+            if (token.Type != tokenType)
+            {
+                throw new Exception($"Expected {tokenType} but got {token.Type}");
+            }
+
+            return token;
         }
 
-        public LiteralExpression ParseLiteral()
+        public SyntaxTree Parse()
         {
-            return new LiteralExpression(_tokens[_currentTokenIndex++]);
+            var root = ParseExpression();
+            var endOfFile = AssertToken(TokenType.EndOfFile);
+            return new SyntaxTree(root, endOfFile);
+        }
+
+        private DarwinExpression ParseExpression()
+        {
+            var left = ParseLiteral();
+            while (Current.Type == TokenType.PlusSign || Current.Type == TokenType.MinusSign)
+            {
+                var op = _tokens[_currentTokenIndex++];
+                var right = ParseExpression();
+                return new BinaryExpression(left, op, right);
+            }
+
+            return left;
+        }
+
+        private LiteralExpression ParseLiteral()
+        {
+            return new LiteralExpression(_tokens.ElementAtOrDefault(_currentTokenIndex++));
         }
     }
 
@@ -85,11 +129,29 @@ namespace Darwin.Syntax
 
         public object? Evaluate(SyntaxNode expression)
         {
-            return null;
+            return expression switch
+            {
+                BinaryExpression binaryExpression => EvaluateBinaryExpression(binaryExpression),
+                LiteralExpression literalExpression => EvaluateLiteralExpression(literalExpression),
+                _ => null
+            };
+        }
+
+        private object? EvaluateLiteralExpression(LiteralExpression expression)
+        {
+            return expression.SyntaxToken.Value;
         }
 
         private object? EvaluateBinaryExpression(BinaryExpression expression)
         {
+            var left = Evaluate(expression.LeftOperand);
+            var right = Evaluate(expression.RightOperand);
+            switch (expression.Operator.Type)
+            {
+                case TokenType.PlusSign:
+                    return (long) left + (long) right;
+            }
+            
             return default;
         }
     }
