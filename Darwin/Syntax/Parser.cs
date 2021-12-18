@@ -127,29 +127,37 @@ namespace Darwin.Syntax
             _root = root;
         }
 
-        public object? Evaluate(SyntaxNode expression)
+        public object Evaluate(SyntaxNode expression)
         {
             return expression switch
             {
                 BinaryExpression binaryExpression => EvaluateBinaryExpression(binaryExpression),
                 LiteralExpression literalExpression => EvaluateLiteralExpression(literalExpression),
-                _ => null
+                _ => throw new ArgumentOutOfRangeException()
             };
         }
 
-        private object? EvaluateLiteralExpression(LiteralExpression expression)
+        private object EvaluateLiteralExpression(LiteralExpression expression)
         {
-            return expression.SyntaxToken.Value;
+            return expression.SyntaxToken.Value!;
         }
 
-        private object? EvaluateBinaryExpression(BinaryExpression expression)
+        private object EvaluateBinaryExpression(BinaryExpression expression)
         {
-            var left = Evaluate(expression.LeftOperand);
-            var right = Evaluate(expression.RightOperand);
-            switch (expression.Operator.Type)
+            var (leftOperand, @operator, rightOperand) = expression;
+            
+            var left = (long) Evaluate(leftOperand);
+            var right = (long) Evaluate(rightOperand);
+            switch (@operator.Type)
             {
                 case TokenType.PlusSign:
-                    return (long) left + (long) right;
+                    return left + right;
+                case TokenType.MinusSign:
+                    return left - right;
+                case TokenType.AsteriskSign:
+                    return left * right;
+                case TokenType.SlashSign:
+                    return left / right;
             }
             
             return default;
