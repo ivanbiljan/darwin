@@ -9,7 +9,7 @@ namespace Darwin.Syntax
         private readonly IList<SyntaxToken> _tokens;
         private int _currentTokenIndex = 0;
 
-        public Parser(IList<SyntaxToken> tokens)
+        public Parser(IEnumerable<SyntaxToken> tokens)
         {
             _tokens = tokens.Where(t => t.Type != TokenType.Space).ToList();
         }
@@ -81,6 +81,8 @@ namespace Darwin.Syntax
         {
             switch (Current.Type)
             {
+                case TokenType.MinusSign:
+                    return ParseUnaryExpression();
                 case TokenType.Number:
                     return ParseLiteral();
                 case TokenType.LeftParenthesis:
@@ -88,6 +90,13 @@ namespace Darwin.Syntax
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private DarwinExpression ParseUnaryExpression()
+        {
+            var @operator = ConsumeToken();
+            var expression = ParseExpression();
+            return new UnaryExpression(@operator, expression);
         }
 
         private LiteralExpression ParseLiteral()
@@ -101,6 +110,17 @@ namespace Darwin.Syntax
             var expression = ParseExpression();
             var rightParenthesisToken = AssertToken(TokenType.RightParenthesis);
             return new ParenthesizedExpression(leftParenthesisToken, expression, rightParenthesisToken);
+        }
+    }
+
+    internal sealed record UnaryExpression(SyntaxToken Operator, DarwinExpression Expression) : DarwinExpression
+    {
+        public override DarwinExpressionType Type => DarwinExpressionType.Unary;
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return Operator;
+            yield return Expression;
         }
     }
 }

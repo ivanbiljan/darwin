@@ -4,10 +4,11 @@ namespace Darwin.Syntax
 {
     internal sealed class Evaluator
     {
-        public object Evaluate(SyntaxNode expression)
+        public object? Evaluate(SyntaxNode expression)
         {
             return expression switch
             {
+                UnaryExpression unaryExpression => EvaluateUnaryExpression(unaryExpression),
                 BinaryExpression binaryExpression => EvaluateBinaryExpression(binaryExpression),
                 LiteralExpression literalExpression => EvaluateLiteralExpression(literalExpression),
                 ParenthesizedExpression parenthesizedExpression => Evaluate(parenthesizedExpression.Expression),
@@ -15,30 +16,36 @@ namespace Darwin.Syntax
             };
         }
 
-        private object EvaluateLiteralExpression(LiteralExpression expression)
+        private object? EvaluateUnaryExpression(UnaryExpression unaryExpression)
         {
-            return expression.SyntaxToken.Value!;
+            switch (unaryExpression.Operator.Type)
+            {
+                case TokenType.MinusSign:
+                    return -(long)(Evaluate(unaryExpression.Expression) ?? throw new InvalidOperationException());
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private static object? EvaluateLiteralExpression(LiteralExpression expression)
+        {
+            return expression.SyntaxToken.Value;
         }
 
         private object EvaluateBinaryExpression(BinaryExpression expression)
         {
             var (leftOperand, @operator, rightOperand) = expression;
             
-            var left = (long) Evaluate(leftOperand);
-            var right = (long) Evaluate(rightOperand);
-            switch (@operator.Type)
+            var left = (long) (Evaluate(leftOperand) ?? throw new InvalidOperationException());
+            var right = (long) (Evaluate(rightOperand) ?? throw new InvalidOperationException());
+            return @operator.Type switch
             {
-                case TokenType.PlusSign:
-                    return left + right;
-                case TokenType.MinusSign:
-                    return left - right;
-                case TokenType.AsteriskSign:
-                    return left * right;
-                case TokenType.SlashSign:
-                    return left / right;
-            }
-            
-            return default;
+                TokenType.PlusSign => left + right,
+                TokenType.MinusSign => left - right,
+                TokenType.AsteriskSign => left * right,
+                TokenType.SlashSign => left / right,
+                _ => throw new ArgumentOutOfRangeException(nameof(@operator.Type), "Unsupported binary operator")
+            };
         }
     }
 }
