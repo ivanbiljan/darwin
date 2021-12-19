@@ -4,78 +4,6 @@ using System.Linq;
 
 namespace Darwin.Syntax
 {
-    internal abstract record SyntaxNode
-    {
-        public virtual IEnumerable<SyntaxNode> GetChildren() => Enumerable.Empty<SyntaxNode>();
-    }
-
-    /// <summary>
-    /// Represents the base class for an expression. 
-    /// </summary>
-    internal abstract record DarwinExpression : SyntaxNode
-    {
-        /// <summary>
-        /// Gets the type of expression.
-        /// </summary>
-        public abstract DarwinExpressionType Type { get; }
-    }
-    
-    internal sealed record LiteralExpression(SyntaxToken SyntaxToken) : DarwinExpression
-    {
-        public override DarwinExpressionType Type => DarwinExpressionType.Literal;
-
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return SyntaxToken;
-        }
-    }
-
-    internal sealed record BinaryExpression(DarwinExpression LeftOperand, SyntaxToken Operator,
-        DarwinExpression RightOperand) : DarwinExpression
-    {
-        public override DarwinExpressionType Type => DarwinExpressionType.Binary;
-
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return LeftOperand;
-            yield return Operator;
-            yield return RightOperand;
-        }
-    }
-
-    internal sealed record ParenthesizedExpression(SyntaxToken LeftParenthesisToken, DarwinExpression Expression,
-        SyntaxToken RightParenthesisToken) : DarwinExpression
-    {
-        public override DarwinExpressionType Type => DarwinExpressionType.Parenthesized;
-
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return LeftParenthesisToken;
-            yield return Expression;
-            yield return RightParenthesisToken;
-        }
-    }
-
-    internal enum DarwinExpressionType
-    {
-        Unary,
-        Binary,
-        Literal,
-        Parenthesized
-    }
-
-    internal sealed class SyntaxTree
-    {
-        public SyntaxTree(SyntaxNode root, SyntaxToken endOfFile)
-        {
-            Root = root;
-            EndOfFile = endOfFile;
-        }
-
-        public SyntaxToken EndOfFile { get; }
-        public SyntaxNode Root { get; }
-    }
-
     internal sealed class Parser
     {
         private readonly IList<SyntaxToken> _tokens;
@@ -173,53 +101,6 @@ namespace Darwin.Syntax
             var expression = ParseExpression();
             var rightParenthesisToken = AssertToken(TokenType.RightParenthesis);
             return new ParenthesizedExpression(leftParenthesisToken, expression, rightParenthesisToken);
-        }
-    }
-
-    internal sealed class Evaluator
-    {
-        private readonly SyntaxNode _root;
-
-        public Evaluator(SyntaxNode root)
-        {
-            _root = root;
-        }
-
-        public object Evaluate(SyntaxNode expression)
-        {
-            return expression switch
-            {
-                BinaryExpression binaryExpression => EvaluateBinaryExpression(binaryExpression),
-                LiteralExpression literalExpression => EvaluateLiteralExpression(literalExpression),
-                ParenthesizedExpression parenthesizedExpression => Evaluate(parenthesizedExpression.Expression),
-                _ => throw new ArgumentOutOfRangeException()
-            };
-        }
-
-        private object EvaluateLiteralExpression(LiteralExpression expression)
-        {
-            return expression.SyntaxToken.Value!;
-        }
-
-        private object EvaluateBinaryExpression(BinaryExpression expression)
-        {
-            var (leftOperand, @operator, rightOperand) = expression;
-            
-            var left = (long) Evaluate(leftOperand);
-            var right = (long) Evaluate(rightOperand);
-            switch (@operator.Type)
-            {
-                case TokenType.PlusSign:
-                    return left + right;
-                case TokenType.MinusSign:
-                    return left - right;
-                case TokenType.AsteriskSign:
-                    return left * right;
-                case TokenType.SlashSign:
-                    return left / right;
-            }
-            
-            return default;
         }
     }
 }
