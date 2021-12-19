@@ -4,13 +4,6 @@ namespace Darwin.Syntax
 {
     internal sealed class Evaluator
     {
-        private readonly SyntaxNode _root;
-
-        public Evaluator(SyntaxNode root)
-        {
-            _root = root;
-        }
-
         public object Evaluate(SyntaxNode expression)
         {
             return expression switch
