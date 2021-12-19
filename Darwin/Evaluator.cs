@@ -1,6 +1,8 @@
 ﻿using System;
+using Darwin.Syntax;
+using Darwin.Syntax.Expressions;
 
-namespace Darwin.Syntax
+namespace Darwin
 {
     internal sealed class Evaluator
     {
@@ -29,6 +31,7 @@ namespace Darwin.Syntax
                 TokenType.PlusSign => left + right,
                 TokenType.MinusSign => left - right,
                 TokenType.AsteriskSign => left * right,
+                TokenType.DoubleAsteriskSign => (long) Math.Pow(left, right),
                 TokenType.SlashSign => left / right,
                 _ => throw new ArgumentOutOfRangeException(nameof(@operator.Type), "Unsupported binary operator")
             };

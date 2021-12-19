@@ -34,6 +34,19 @@ namespace Darwin.Syntax
             return tokens;
         }
 
+        private char Lookahead
+        {
+            get
+            {
+                if (_input.IsEmpty || _position >= _input.Length)
+                {
+                    return '\0';
+                }
+
+                return _input[_position];
+            }
+        }
+
         /// <summary>
         ///     Scans the input string for the next token and emits it.
         /// </summary>
@@ -80,8 +93,16 @@ namespace Darwin.Syntax
                     return new SyntaxToken(TokenType.MinusSign, new SourceLocation(0, new TextSpan(_position++, 1)),
                         "-");
                 case '*':
+                {
+                    if (Lookahead == '*')
+                    {
+                        return new SyntaxToken(TokenType.DoubleAsteriskSign,
+                            new SourceLocation(0, new TextSpan(_position += 2, 2)), "**");
+                    }
+                    
                     return new SyntaxToken(TokenType.AsteriskSign,
                         new SourceLocation(0, new TextSpan(_position++, 1)), "*");
+                }
                 case '/':
                     return new SyntaxToken(TokenType.SlashSign, new SourceLocation(0, new TextSpan(_position++, 1)),
                         "/");

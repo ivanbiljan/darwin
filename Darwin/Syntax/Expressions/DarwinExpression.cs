@@ -1,4 +1,4 @@
-﻿namespace Darwin.Syntax
+﻿namespace Darwin.Syntax.Expressions
 {
     /// <summary>
     ///     Represents the base class for an expression.

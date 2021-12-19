@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darwin.Syntax.Expressions;
 
 namespace Darwin.Syntax
 {
@@ -93,7 +94,7 @@ namespace Darwin.Syntax
         private DarwinExpression ParseTerm()
         {
             var left = ParseFactor();
-            while (Current.Type is TokenType.AsteriskSign or TokenType.SlashSign)
+            while (Current.Type is TokenType.AsteriskSign or TokenType.DoubleAsteriskSign or TokenType.SlashSign)
             {
                 var op = ConsumeToken();
                 var right = ParseFactor();
@@ -108,17 +109,6 @@ namespace Darwin.Syntax
             var @operator = ConsumeToken();
             var expression = ParseExpression();
             return new UnaryExpression(@operator, expression);
-        }
-    }
-
-    internal sealed record UnaryExpression(SyntaxToken Operator, DarwinExpression Expression) : DarwinExpression
-    {
-        public override DarwinExpressionType Type => DarwinExpressionType.Unary;
-
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return Operator;
-            yield return Expression;
         }
     }
 }

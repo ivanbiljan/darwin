@@ -1,4 +1,4 @@
-﻿namespace Darwin.Syntax
+﻿namespace Darwin.Syntax.Expressions
 {
     internal enum DarwinExpressionType
     {
