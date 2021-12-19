@@ -14,6 +14,16 @@ namespace Darwin.Syntax
         /// <param name="length">The length.</param>
         public TextSpan(int start, int length)
         {
+            if (start < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(start));
+            }
+
+            if (length < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length));
+            }
+            
             Start = start;
             Length = length;
         }

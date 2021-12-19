@@ -3,7 +3,7 @@
 // using Darwin.Syntax;
 // using Xunit;
 //
-// namespace Darwin.UnitTests.CodeAnalysis
+// namespace Darwin.UnitTests.Syntax
 // {
 //     public sealed class LexerTests
 //     {
