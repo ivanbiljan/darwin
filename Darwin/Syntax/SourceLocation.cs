@@ -1,4 +1,6 @@
-﻿namespace Darwin.Syntax
+﻿using System;
+
+namespace Darwin.Syntax
 {
     /// <summary>
     ///     Represents a struct that contains a token's location information.
@@ -13,6 +15,11 @@
         /// <param name="textSpan">The text span.</param>
         public SourceLocation(int line, TextSpan textSpan)
         {
+            if (line < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(line));
+            }
+            
             Line = line;
             TextSpan = textSpan;
         }

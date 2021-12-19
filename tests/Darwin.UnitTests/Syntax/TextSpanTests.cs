@@ -38,5 +38,14 @@ namespace Darwin.UnitTests.Syntax
         {
             Assert.Throws<ArgumentOutOfRangeException>(() => TextSpan.FromBounds(2, 1));
         }
+        
+        [Fact]
+        public void FromBounds_IsCorrect()
+        {
+            var textSpan = TextSpan.FromBounds(2, 5);
+            
+            Assert.Equal(2, textSpan.Start);
+            Assert.Equal(3, textSpan.Length);
+        }
     }
 }

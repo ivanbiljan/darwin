@@ -42,7 +42,7 @@ namespace Darwin.Syntax
                 throw new ArgumentOutOfRangeException(nameof(start));
             }
             
-            if (start <= end)
+            if (end <= start)
             {
                 throw new ArgumentOutOfRangeException(nameof(end));
             }
