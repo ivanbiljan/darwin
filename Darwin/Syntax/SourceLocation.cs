@@ -19,7 +19,7 @@ namespace Darwin.Syntax
             {
                 throw new ArgumentOutOfRangeException(nameof(line));
             }
-            
+
             Line = line;
             TextSpan = textSpan;
         }

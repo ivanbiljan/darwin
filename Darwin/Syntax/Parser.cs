@@ -7,7 +7,7 @@ namespace Darwin.Syntax
     internal sealed class Parser
     {
         private readonly IList<SyntaxToken> _tokens;
-        private int _currentTokenIndex = 0;
+        private int _currentTokenIndex;
 
         public Parser(IEnumerable<SyntaxToken> tokens)
         {
@@ -17,6 +17,13 @@ namespace Darwin.Syntax
         private SyntaxToken? Current => _tokens.ElementAtOrDefault(_currentTokenIndex);
 
         private SyntaxToken? Lookahead => _tokens.ElementAtOrDefault(_currentTokenIndex + 1);
+
+        public SyntaxTree Parse()
+        {
+            var root = ParseExpression();
+            var endOfFile = AssertToken(TokenType.EndOfFile);
+            return new SyntaxTree(root, endOfFile);
+        }
 
         private SyntaxToken AssertToken(TokenType tokenType)
         {
@@ -28,7 +35,8 @@ namespace Darwin.Syntax
             var token = ConsumeToken();
             if (token.Type != tokenType)
             {
-                throw new Exception($"Expected {tokenType} but got {token.Type} at column {token.LocationInformation.TextSpan.Start}");
+                throw new Exception(
+                    $"Expected {tokenType} but got {token.Type} at column {token.LocationInformation.TextSpan.Start}");
             }
 
             return token;
@@ -44,13 +52,6 @@ namespace Darwin.Syntax
             return _tokens[_currentTokenIndex++];
         }
 
-        public SyntaxTree Parse()
-        {
-            var root = ParseExpression();
-            var endOfFile = AssertToken(TokenType.EndOfFile);
-            return new SyntaxTree(root, endOfFile);
-        }
-
         private DarwinExpression ParseExpression()
         {
             var left = ParseTerm();
@@ -58,19 +59,6 @@ namespace Darwin.Syntax
             {
                 var op = ConsumeToken();
                 var right = ParseTerm();
-                left = new BinaryExpression(left, op, right);
-            }
-
-            return left;
-        }
-
-        private DarwinExpression ParseTerm()
-        {
-            var left = ParseFactor();
-            while (Current.Type is TokenType.AsteriskSign or TokenType.SlashSign)
-            {
-                var op = ConsumeToken();
-                var right = ParseFactor();
                 left = new BinaryExpression(left, op, right);
             }
 
@@ -92,17 +80,7 @@ namespace Darwin.Syntax
             }
         }
 
-        private DarwinExpression ParseUnaryExpression()
-        {
-            var @operator = ConsumeToken();
-            var expression = ParseExpression();
-            return new UnaryExpression(@operator, expression);
-        }
-
-        private LiteralExpression ParseLiteral()
-        {
-            return new LiteralExpression(ConsumeToken());
-        }
+        private LiteralExpression ParseLiteral() => new LiteralExpression(ConsumeToken());
 
         private ParenthesizedExpression ParseParenthesizedExpression()
         {
@@ -110,6 +88,26 @@ namespace Darwin.Syntax
             var expression = ParseExpression();
             var rightParenthesisToken = AssertToken(TokenType.RightParenthesis);
             return new ParenthesizedExpression(leftParenthesisToken, expression, rightParenthesisToken);
+        }
+
+        private DarwinExpression ParseTerm()
+        {
+            var left = ParseFactor();
+            while (Current.Type is TokenType.AsteriskSign or TokenType.SlashSign)
+            {
+                var op = ConsumeToken();
+                var right = ParseFactor();
+                left = new BinaryExpression(left, op, right);
+            }
+
+            return left;
+        }
+
+        private DarwinExpression ParseUnaryExpression()
+        {
+            var @operator = ConsumeToken();
+            var expression = ParseExpression();
+            return new UnaryExpression(@operator, expression);
         }
     }
 

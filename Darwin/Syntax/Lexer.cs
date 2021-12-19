@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Darwin.Syntax
 {
     // TODO: line number support
-    
+
     internal ref struct Lexer
     {
         private readonly ReadOnlySpan<char> _input;
@@ -24,7 +23,7 @@ namespace Darwin.Syntax
         public IList<SyntaxToken> TokenizeInput()
         {
             var tokens = new List<SyntaxToken>();
-                
+
             SyntaxToken currentToken;
             do
             {

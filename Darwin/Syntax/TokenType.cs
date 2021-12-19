@@ -16,6 +16,6 @@
         Unexpected,
         LeftCurlyBrace,
         RightCurlyBrace,
-        EndOfFile,
+        EndOfFile
     }
 }

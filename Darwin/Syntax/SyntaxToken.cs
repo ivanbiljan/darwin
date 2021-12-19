@@ -18,10 +18,7 @@ namespace Darwin.Syntax
             TokenType.PlusSign,
             TokenType.MinusSign
         };
-        
-        public static bool IsUnaryOperator(this SyntaxToken syntaxToken)
-        {
-            return UnaryOperators.Contains(syntaxToken.Type);
-        }
+
+        public static bool IsUnaryOperator(this SyntaxToken syntaxToken) => UnaryOperators.Contains(syntaxToken.Type);
     }
 }

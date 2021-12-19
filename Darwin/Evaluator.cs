@@ -4,6 +4,8 @@ namespace Darwin.Syntax
 {
     internal sealed class Evaluator
     {
+        private static object? EvaluateLiteralExpression(LiteralExpression expression) => expression.SyntaxToken.Value;
+
         public object? Evaluate(SyntaxNode expression)
         {
             return expression switch
@@ -16,6 +18,22 @@ namespace Darwin.Syntax
             };
         }
 
+        private object EvaluateBinaryExpression(BinaryExpression expression)
+        {
+            var (leftOperand, @operator, rightOperand) = expression;
+
+            var left = (long)(Evaluate(leftOperand) ?? throw new InvalidOperationException());
+            var right = (long)(Evaluate(rightOperand) ?? throw new InvalidOperationException());
+            return @operator.Type switch
+            {
+                TokenType.PlusSign => left + right,
+                TokenType.MinusSign => left - right,
+                TokenType.AsteriskSign => left * right,
+                TokenType.SlashSign => left / right,
+                _ => throw new ArgumentOutOfRangeException(nameof(@operator.Type), "Unsupported binary operator")
+            };
+        }
+
         private object? EvaluateUnaryExpression(UnaryExpression unaryExpression)
         {
             switch (unaryExpression.Operator.Type)
@@ -25,27 +43,6 @@ namespace Darwin.Syntax
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-
-        private static object? EvaluateLiteralExpression(LiteralExpression expression)
-        {
-            return expression.SyntaxToken.Value;
-        }
-
-        private object EvaluateBinaryExpression(BinaryExpression expression)
-        {
-            var (leftOperand, @operator, rightOperand) = expression;
-            
-            var left = (long) (Evaluate(leftOperand) ?? throw new InvalidOperationException());
-            var right = (long) (Evaluate(rightOperand) ?? throw new InvalidOperationException());
-            return @operator.Type switch
-            {
-                TokenType.PlusSign => left + right,
-                TokenType.MinusSign => left - right,
-                TokenType.AsteriskSign => left * right,
-                TokenType.SlashSign => left / right,
-                _ => throw new ArgumentOutOfRangeException(nameof(@operator.Type), "Unsupported binary operator")
-            };
         }
     }
 }

@@ -23,25 +23,28 @@ namespace Darwin.Syntax
             {
                 throw new ArgumentOutOfRangeException(nameof(length));
             }
-            
+
             Start = start;
             Length = length;
         }
 
         /// <summary>
-        /// Initializes a <see cref="TextSpan"/> instance from the given bounds.
+        ///     Initializes a <see cref="TextSpan" /> instance from the given bounds.
         /// </summary>
         /// <param name="start">The start column.</param>
         /// <param name="end">The end column.</param>
-        /// <returns>The <see cref="TextSpan"/> that wraps the given bounds.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> is negative or <paramref name="end"/> is &lt;= <paramref name="start"/>.</exception>
+        /// <returns>The <see cref="TextSpan" /> that wraps the given bounds.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="start" /> is negative or <paramref name="end" /> is &lt;=
+        ///     <paramref name="start" />.
+        /// </exception>
         public static TextSpan FromBounds(int start, int end)
         {
             if (start < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(start));
             }
-            
+
             if (end <= start)
             {
                 throw new ArgumentOutOfRangeException(nameof(end));
@@ -49,7 +52,7 @@ namespace Darwin.Syntax
 
             return new TextSpan(start, end - start);
         }
-        
+
         /// <summary>
         ///     Gets the start column.
         /// </summary>
