@@ -43,11 +43,25 @@ namespace Darwin.Syntax
         }
     }
 
+    internal sealed record ParenthesizedExpression(SyntaxToken LeftParenthesisToken, DarwinExpression Expression,
+        SyntaxToken RightParenthesisToken) : DarwinExpression
+    {
+        public override DarwinExpressionType Type => DarwinExpressionType.Parenthesized;
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return LeftParenthesisToken;
+            yield return Expression;
+            yield return RightParenthesisToken;
+        }
+    }
+
     internal enum DarwinExpressionType
     {
         Unary,
         Binary,
-        Literal
+        Literal,
+        Parenthesized
     }
 
     internal sealed class SyntaxTree
@@ -83,13 +97,23 @@ namespace Darwin.Syntax
                 throw new Exception("Cannot read past input length");
             }
 
-            var token = _tokens.ElementAt(_currentTokenIndex);
+            var token = ConsumeToken();
             if (token.Type != tokenType)
             {
-                throw new Exception($"Expected {tokenType} but got {token.Type}");
+                throw new Exception($"Expected {tokenType} but got {token.Type} at column {token.LocationInformation.TextSpan.Start}");
             }
 
             return token;
+        }
+
+        private SyntaxToken ConsumeToken()
+        {
+            if (_currentTokenIndex >= _tokens.Count)
+            {
+                throw new Exception("Cannot read past input length");
+            }
+
+            return _tokens[_currentTokenIndex++];
         }
 
         public SyntaxTree Parse()
@@ -101,20 +125,54 @@ namespace Darwin.Syntax
 
         private DarwinExpression ParseExpression()
         {
-            var left = ParseLiteral();
-            while (Current.Type == TokenType.PlusSign || Current.Type == TokenType.MinusSign)
+            var left = ParseTerm();
+            while (Current.Type is TokenType.PlusSign or TokenType.MinusSign)
             {
-                var op = _tokens[_currentTokenIndex++];
-                var right = ParseExpression();
-                return new BinaryExpression(left, op, right);
+                var op = ConsumeToken();
+                var right = ParseTerm();
+                left = new BinaryExpression(left, op, right);
             }
 
             return left;
         }
 
+        private DarwinExpression ParseTerm()
+        {
+            var left = ParseFactor();
+            while (Current.Type is TokenType.AsteriskSign or TokenType.SlashSign)
+            {
+                var op = ConsumeToken();
+                var right = ParseFactor();
+                left = new BinaryExpression(left, op, right);
+            }
+
+            return left;
+        }
+
+        private DarwinExpression ParseFactor()
+        {
+            switch (Current.Type)
+            {
+                case TokenType.Number:
+                    return ParseLiteral();
+                case TokenType.LeftParenthesis:
+                    return ParseParenthesizedExpression();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         private LiteralExpression ParseLiteral()
         {
-            return new LiteralExpression(_tokens.ElementAtOrDefault(_currentTokenIndex++));
+            return new LiteralExpression(ConsumeToken());
+        }
+
+        private ParenthesizedExpression ParseParenthesizedExpression()
+        {
+            var leftParenthesisToken = ConsumeToken();
+            var expression = ParseExpression();
+            var rightParenthesisToken = AssertToken(TokenType.RightParenthesis);
+            return new ParenthesizedExpression(leftParenthesisToken, expression, rightParenthesisToken);
         }
     }
 
@@ -133,6 +191,7 @@ namespace Darwin.Syntax
             {
                 BinaryExpression binaryExpression => EvaluateBinaryExpression(binaryExpression),
                 LiteralExpression literalExpression => EvaluateLiteralExpression(literalExpression),
+                ParenthesizedExpression parenthesizedExpression => Evaluate(parenthesizedExpression.Expression),
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
