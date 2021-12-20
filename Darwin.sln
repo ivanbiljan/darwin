@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darwin", "Darwin\Darwin.csproj", "{1C38101B-2F5D-4E59-89E6-C6C9174CEBC5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darwin", "src\Darwin\Darwin.csproj", "{1C38101B-2F5D-4E59-89E6-C6C9174CEBC5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darwin.UnitTests", "tests\Darwin.UnitTests\Darwin.UnitTests.csproj", "{456A047F-5D3C-485F-9889-57E46DD97B0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darwin.Interactive", "Darwin.Interactive\Darwin.Interactive.csproj", "{C8E11929-D7CD-4BA6-830C-EF5F28BF1C8B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darwin.Interactive", "src\Darwin.Interactive\Darwin.Interactive.csproj", "{C8E11929-D7CD-4BA6-830C-EF5F28BF1C8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
