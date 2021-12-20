@@ -53,20 +53,27 @@ namespace Darwin.Syntax
             return _tokens[_currentTokenIndex++];
         }
 
-        private DarwinExpression ParseExpression()
+        private DarwinExpression ParseExpression(int precedence = 0)
         {
-            var left = ParseTerm();
-            while (Current.Type is TokenType.PlusSign or TokenType.MinusSign)
+            var left = ParsePrimary();
+            while (true)
             {
-                var op = ConsumeToken();
-                var right = ParseTerm();
-                left = new BinaryExpression(left, op, right);
+                var @operator = Current;
+                var operatorPrecedence = SyntaxRules.GetBinaryOperatorPrecedence(@operator.Type);
+                if (operatorPrecedence <= precedence)
+                {
+                    break;
+                }
+
+                ConsumeToken();
+                var right = ParseExpression(operatorPrecedence);
+                left = new BinaryExpression(left, @operator, right);
             }
 
             return left;
         }
 
-        private DarwinExpression ParseFactor()
+        private DarwinExpression ParsePrimary()
         {
             switch (Current.Type)
             {
@@ -91,17 +98,27 @@ namespace Darwin.Syntax
             return new ParenthesizedExpression(leftParenthesisToken, expression, rightParenthesisToken);
         }
 
-        private DarwinExpression ParseTerm()
+        internal static class SyntaxRules
         {
-            var left = ParseFactor();
-            while (Current.Type is TokenType.AsteriskSign or TokenType.DoubleAsteriskSign or TokenType.SlashSign)
+            public static int GetBinaryOperatorPrecedence(TokenType type)
             {
-                var op = ConsumeToken();
-                var right = ParseFactor();
-                left = new BinaryExpression(left, op, right);
+                switch (type)
+                {
+                    case TokenType.DoubleAsteriskSign:
+                        return 3;
+                    
+                    case TokenType.AsteriskSign:
+                    case TokenType.SlashSign:
+                        return 2;
+                    
+                    case TokenType.PlusSign:
+                    case TokenType.MinusSign:
+                        return 1;
+                    
+                    default:
+                        return 0;
+                }
             }
-
-            return left;
         }
 
         private DarwinExpression ParseUnaryExpression()

@@ -7,14 +7,24 @@ namespace Darwin.Interactive
     {
         static void Main(string[] args)
         {
-            var lexer = new Lexer("-(((3 + 2) * 3 * 2 * (2 + 1)) * (-2 - 3))");
-            var tokens = lexer.TokenizeInput();
-            var parser = new Parser(tokens);
-            var tree = parser.Parse();
-            Console.WriteLine(tree.Root);
+            while (true)
+            {
+                var input = Console.ReadLine();
+                if (input == "exit")
+                {
+                    return;
+                }
+                
+                var lexer = new Lexer(input);
+                var tokens = lexer.TokenizeInput();
+                var parser = new Parser(tokens);
+                
+                var tree = parser.Parse();
+                Console.WriteLine(tree.Root);
 
-            var eval = new Evaluator();
-            Console.WriteLine(eval.Evaluate(tree.Root));
+                var eval = new Evaluator();
+                Console.WriteLine(eval.Evaluate(tree.Root));
+            }
         }
     }
 }

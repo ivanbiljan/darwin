@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Darwin.Syntax.Expressions
+namespace Darwin.Syntax
 {
     internal sealed record ParenthesizedExpression(SyntaxToken LeftParenthesisToken, DarwinExpression Expression,
         SyntaxToken RightParenthesisToken) : DarwinExpression

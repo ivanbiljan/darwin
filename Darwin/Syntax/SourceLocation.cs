@@ -15,7 +15,7 @@ namespace Darwin.Syntax
         /// <param name="textSpan">The text span.</param>
         public SourceLocation(int line, TextSpan textSpan)
         {
-            if (line < 1)
+            if (line < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(line));
             }

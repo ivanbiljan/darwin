@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Darwin.Syntax.Expressions
+namespace Darwin.Syntax
 {
     internal sealed record BinaryExpression(DarwinExpression LeftOperand, SyntaxToken Operator,
         DarwinExpression RightOperand) : DarwinExpression

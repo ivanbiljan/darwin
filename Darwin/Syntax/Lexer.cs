@@ -38,12 +38,12 @@ namespace Darwin.Syntax
         {
             get
             {
-                if (_input.IsEmpty || _position >= _input.Length)
+                if (_input.IsEmpty || (_position + 1) >= _input.Length)
                 {
                     return '\0';
                 }
 
-                return _input[_position];
+                return _input[_position + 1];
             }
         }
 
@@ -96,8 +96,9 @@ namespace Darwin.Syntax
                 {
                     if (Lookahead == '*')
                     {
+                        _position += 2;
                         return new SyntaxToken(TokenType.DoubleAsteriskSign,
-                            new SourceLocation(0, new TextSpan(_position += 2, 2)), "**");
+                            new SourceLocation(0, new TextSpan(_position, 2)), "**");
                     }
                     
                     return new SyntaxToken(TokenType.AsteriskSign,
