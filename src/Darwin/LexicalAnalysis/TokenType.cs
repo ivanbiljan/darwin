@@ -1,4 +1,4 @@
-﻿namespace Darwin.Syntax;
+﻿namespace Darwin.LexicalAnalysis;
 
 public enum TokenType
 {

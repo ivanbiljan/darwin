@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darwin.Syntax;
 using Darwin.Syntax.Expressions;
 
-namespace Darwin.Syntax;
+namespace Darwin.LexicalAnalysis;
 
 internal sealed class Parser
 {

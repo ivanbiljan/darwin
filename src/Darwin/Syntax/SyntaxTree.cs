@@ -1,4 +1,6 @@
-﻿namespace Darwin.Syntax;
+﻿using Darwin.LexicalAnalysis;
+
+namespace Darwin.Syntax;
 
 internal sealed class SyntaxTree
 {

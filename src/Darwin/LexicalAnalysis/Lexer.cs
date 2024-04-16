@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Darwin.Syntax;
+namespace Darwin.LexicalAnalysis;
 
 internal ref struct Lexer
 {

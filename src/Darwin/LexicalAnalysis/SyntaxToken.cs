@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Darwin.Syntax;
+namespace Darwin.LexicalAnalysis;
 
 /// <summary>
 ///     Represents a syntax token. The smallest lexical unit that has meaning.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Darwin.Syntax;
+namespace Darwin.LexicalAnalysis;
 
 /// <summary>
 ///     Represents a text span.
