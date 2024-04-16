@@ -34,6 +34,7 @@ public enum TokenType
     FunctionKeyword = 30,
     Equals = 31,
     EqualsEquals = 32,
+    StringLiteral = 33,
     Illegal = 98,
     EndOfFile = 99
 }

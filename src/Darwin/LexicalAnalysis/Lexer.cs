@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Darwin.Diagnostics;
 
 namespace Darwin.LexicalAnalysis;
 
@@ -22,15 +23,21 @@ internal ref struct Lexer
     {
         var tokens = new List<SyntaxToken>();
 
-        SyntaxToken currentToken;
-        do
+        while (true)
         {
-            currentToken = EmitToken();
-            if (currentToken is not null)
+            var currentToken = EmitToken();
+            if (currentToken is null)
             {
-                tokens.Add(currentToken);
+                continue;
             }
-        } while (currentToken.Type != TokenType.EndOfFile);
+            
+            if (currentToken is {Type: TokenType.EndOfFile})
+            {
+                break;
+            }
+            
+            tokens.Add(currentToken);
+        }
 
         return tokens;
     }
@@ -65,6 +72,31 @@ internal ref struct Lexer
 
         switch (_input[_position])
         {
+            case '"':
+            {
+                var start = _position;
+                while (_position < _input.Length && Lookahead != '"')
+                {
+                    _position++;
+                }
+
+                if (_position >= _input.Length)
+                {
+                    ProblemReporter.AddError(_lineNumber, "Unterminated string");
+
+                    return null;
+                }
+                
+                _position++;
+                
+                var token = new SyntaxToken(
+                    TokenType.StringLiteral,
+                    new SourceLocation(_lineNumber, TextSpan.FromBounds(start, _position)),
+                    _input[(start + 1).._position].ToString()
+                );
+
+                return token;
+            }
             case <= '9' and >= '0':
             {
                 var start = _position;
@@ -78,7 +110,6 @@ internal ref struct Lexer
                 return new SyntaxToken(
                     TokenType.Number,
                     new SourceLocation(0, new TextSpan(start, _position - start)),
-                    stringRepresentation,
                     long.Parse(stringRepresentation)
                 );
             }

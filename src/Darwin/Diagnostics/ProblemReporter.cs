@@ -2,16 +2,16 @@
 
 namespace Darwin.Diagnostics;
 
-public sealed class ProblemReporter
+public static class ProblemReporter
 {
-    private readonly List<Problem> _problems = [];
+    private static readonly List<Problem> _problems = [];
 
-    public void AddError(int lineNumber, string description)
+    public static void AddError(int lineNumber, string description)
     {
         _problems.Add(new Problem(lineNumber, description, false));
     }
 
-    public IEnumerable<Problem> GetAll()
+    public static IEnumerable<Problem> GetAll()
     {
         return _problems;
     }

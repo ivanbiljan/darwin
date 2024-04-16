@@ -22,8 +22,8 @@ internal class Program
             var tree = parser.Parse();
             Console.WriteLine(tree.Root);
 
-            var eval = new Evaluator();
-            Console.WriteLine(eval.Evaluate(tree.Root));
+            // var eval = new Evaluator();
+            // Console.WriteLine(eval.Evaluate(tree.Root));
         }
     }
 }
