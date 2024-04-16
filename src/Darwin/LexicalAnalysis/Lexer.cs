@@ -97,7 +97,24 @@ internal ref struct Lexer
 
                 return token;
             }
-            case <= '9' and >= '0':
+            case '_' or >= 'a' and <= 'z' or >= 'A' and <= 'Z':
+            {
+                var start = _position;
+                while (char.IsAsciiLetterOrDigit(_input[_position]) || _input[_position] is '_')
+                {
+                    _position++;
+                }
+
+                var keywordOrIdentifier = _input[start.._position].ToString();
+                var tokenType = SyntaxRules.Keywords.GetValueOrDefault(keywordOrIdentifier, TokenType.Identifier);
+                
+                return new SyntaxToken(
+                    tokenType,
+                    new SourceLocation(_lineNumber, TextSpan.FromBounds(start, _position)),
+                    keywordOrIdentifier
+                );
+            }
+            case >= '0' and <= '9':
             {
                 var start = _position;
                 while (_position < _input.Length && char.IsDigit(_input[_position]))
@@ -115,17 +132,30 @@ internal ref struct Lexer
             }
             case var c when char.IsWhiteSpace(c):
             {
-                var start = _position;
                 while (_position < _input.Length && char.IsWhiteSpace(_input[_position]))
                 {
                     ++_position;
                 }
 
-                return new SyntaxToken(
-                    TokenType.Space,
-                    new SourceLocation(0, new TextSpan(start, _position - start)),
-                    new string(' ', _position - start)
-                );
+                return null;
+            }
+            case '\n':
+            case '\r':
+            {
+                if (_input[_position] == '\r' && Lookahead == '\n')
+                {
+                    _position += 2;
+                    _lineNumber++;
+
+                    return null;
+                }
+
+                while (_input[_position] == '\n')
+                {
+                    _lineNumber++;
+                }
+
+                return null;
             }
             case '+':
                 return new SyntaxToken(
@@ -176,34 +206,6 @@ internal ref struct Lexer
                     new SourceLocation(0, new TextSpan(_position++, 1)),
                     ")"
                 );
-            case ' ':
-            case '\t':
-            {
-                while (char.IsWhiteSpace(_input[_position]))
-                {
-                    ++_position;
-                }
-
-                return null;
-            }
-            case '\n':
-            case '\r':
-            {
-                if (_input[_position] == '\r' && Lookahead == '\n')
-                {
-                    _position += 2;
-                    _lineNumber++;
-
-                    return null;
-                }
-
-                while (_input[_position] == '\n')
-                {
-                    _lineNumber++;
-                }
-
-                return null;
-            }
             default:
                 throw new ArgumentOutOfRangeException(nameof(_input), $"Unsupported token {_input[_position]}");
         }

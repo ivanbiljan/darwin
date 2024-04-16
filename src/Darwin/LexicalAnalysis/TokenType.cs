@@ -35,6 +35,7 @@ public enum TokenType
     Equals = 31,
     EqualsEquals = 32,
     StringLiteral = 33,
+    Identifier = 34,
     Illegal = 98,
     EndOfFile = 99
 }

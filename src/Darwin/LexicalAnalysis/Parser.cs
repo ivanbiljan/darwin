@@ -112,27 +112,4 @@ internal sealed class Parser
 
         return new UnaryExpression(@operator, expression);
     }
-
-    internal static class SyntaxRules
-    {
-        public static int GetBinaryOperatorPrecedence(TokenType type)
-        {
-            switch (type)
-            {
-                case TokenType.DoubleAsteriskSign:
-                    return 3;
-
-                case TokenType.AsteriskSign:
-                case TokenType.SlashSign:
-                    return 2;
-
-                case TokenType.PlusSign:
-                case TokenType.MinusSign:
-                    return 1;
-
-                default:
-                    return 0;
-            }
-        }
-    }
 }
