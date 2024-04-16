@@ -26,9 +26,12 @@ public enum TokenType
     ElseKeyword = 22,
     ElseIfKeyword = 23,
     LetKeyword = 24,
-    WhileKeyword = 25,
-    ForKeyword = 26,
-    FunctionKeyword = 27,
+    StringKeyword = 25,
+    BooleanKeyword = 26,
+    NumberKeyword = 27,
+    WhileKeyword = 28,
+    ForKeyword = 29,
+    FunctionKeyword = 30,
     Illegal = 98,
     EndOfFile = 99
 }
