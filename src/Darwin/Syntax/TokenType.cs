@@ -2,20 +2,21 @@
 
 public enum TokenType
 {
-    Space,
-    Number,
-    PlusSign,
-    MinusSign,
-    AsteriskSign,
-    SlashSign,
-    LeftParenthesis,
-    RightParenthesis,
-    Dot,
-    Colon,
-    Semicolon,
-    Unexpected,
-    LeftCurlyBrace,
-    RightCurlyBrace,
-    DoubleAsteriskSign,
-    EndOfFile
+    Space = 1,
+    Number = 2,
+    PlusSign = 3,
+    MinusSign = 4,
+    AsteriskSign = 5,
+    SlashSign = 6,
+    LeftParenthesis = 7,
+    RightParenthesis = 8,
+    Dot = 9,
+    Colon = 10,
+    Semicolon = 11,
+    Unexpected = 12,
+    LeftCurlyBrace = 13,
+    RightCurlyBrace = 14,
+    DoubleAsteriskSign = 15,
+    Illegal = 98,
+    EndOfFile = 99
 }

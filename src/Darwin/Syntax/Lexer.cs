@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 namespace Darwin.Syntax;
-// TODO: line number support
 
 internal ref struct Lexer
 {
