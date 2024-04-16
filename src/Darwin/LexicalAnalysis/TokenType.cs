@@ -32,6 +32,8 @@ public enum TokenType
     WhileKeyword = 28,
     ForKeyword = 29,
     FunctionKeyword = 30,
+    Equals = 31,
+    EqualsEquals = 32,
     Illegal = 98,
     EndOfFile = 99
 }

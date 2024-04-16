@@ -6,6 +6,7 @@ namespace Darwin.LexicalAnalysis;
 internal ref struct Lexer
 {
     private readonly ReadOnlySpan<char> _input;
+    private int _lineNumber = 1;
     private int _position;
 
     /// <summary>
@@ -15,10 +16,9 @@ internal ref struct Lexer
     public Lexer(ReadOnlySpan<char> input)
     {
         _input = input;
-        _position = 0;
     }
 
-    public IList<SyntaxToken> TokenizeInput()
+    public IEnumerable<SyntaxToken> TokenizeInput()
     {
         var tokens = new List<SyntaxToken>();
 
@@ -26,7 +26,10 @@ internal ref struct Lexer
         do
         {
             currentToken = EmitToken();
-            tokens.Add(currentToken);
+            if (currentToken is not null)
+            {
+                tokens.Add(currentToken);
+            }
         } while (currentToken.Type != TokenType.EndOfFile);
 
         return tokens;
@@ -49,7 +52,7 @@ internal ref struct Lexer
     ///     Scans the input string for the next token and emits it.
     /// </summary>
     /// <returns>The next token.</returns>
-    public SyntaxToken EmitToken()
+    private SyntaxToken? EmitToken()
     {
         if (_position >= _input.Length)
         {
@@ -142,6 +145,34 @@ internal ref struct Lexer
                     new SourceLocation(0, new TextSpan(_position++, 1)),
                     ")"
                 );
+            case ' ':
+            case '\t':
+            {
+                while (char.IsWhiteSpace(_input[_position]))
+                {
+                    ++_position;
+                }
+
+                return null;
+            }
+            case '\n':
+            case '\r':
+            {
+                if (_input[_position] == '\r' && Lookahead == '\n')
+                {
+                    _position += 2;
+                    _lineNumber++;
+
+                    return null;
+                }
+
+                while (_input[_position] == '\n')
+                {
+                    _lineNumber++;
+                }
+
+                return null;
+            }
             default:
                 throw new ArgumentOutOfRangeException(nameof(_input), $"Unsupported token {_input[_position]}");
         }
