@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Darwin.Syntax
+namespace Darwin.Syntax;
+
+internal abstract record SyntaxNode
 {
-    internal abstract record SyntaxNode
+    public virtual IEnumerable<SyntaxNode> GetChildren()
     {
-        public virtual IEnumerable<SyntaxNode> GetChildren() => Enumerable.Empty<SyntaxNode>();
+        return Enumerable.Empty<SyntaxNode>();
     }
 }

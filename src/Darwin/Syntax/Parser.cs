@@ -3,129 +3,135 @@ using System.Collections.Generic;
 using System.Linq;
 using Darwin.Syntax.Expressions;
 
-namespace Darwin.Syntax
+namespace Darwin.Syntax;
+
+internal sealed class Parser
 {
-    internal sealed class Parser
+    private readonly IList<SyntaxToken> _tokens;
+    private int _currentTokenIndex;
+
+    public Parser(IEnumerable<SyntaxToken> tokens)
     {
-        private readonly IList<SyntaxToken> _tokens;
-        private int _currentTokenIndex;
+        _tokens = tokens.Where(t => t.Type != TokenType.Space).ToList();
+    }
 
-        public Parser(IEnumerable<SyntaxToken> tokens)
+    private SyntaxToken? Current => _tokens.ElementAtOrDefault(_currentTokenIndex);
+
+    private SyntaxToken? Lookahead => _tokens.ElementAtOrDefault(_currentTokenIndex + 1);
+
+    public SyntaxTree Parse()
+    {
+        var root = ParseExpression();
+        var endOfFile = AssertToken(TokenType.EndOfFile);
+
+        return new SyntaxTree(root, endOfFile);
+    }
+
+    private SyntaxToken AssertToken(TokenType tokenType)
+    {
+        if (_currentTokenIndex >= _tokens.Count)
         {
-            _tokens = tokens.Where(t => t.Type != TokenType.Space).ToList();
+            throw new Exception("Cannot read past input length");
         }
 
-        private SyntaxToken? Current => _tokens.ElementAtOrDefault(_currentTokenIndex);
-
-        private SyntaxToken? Lookahead => _tokens.ElementAtOrDefault(_currentTokenIndex + 1);
-
-        public SyntaxTree Parse()
+        var token = ConsumeToken();
+        if (token.Type != tokenType)
         {
-            var root = ParseExpression();
-            var endOfFile = AssertToken(TokenType.EndOfFile);
-            return new SyntaxTree(root, endOfFile);
+            throw new Exception(
+                $"Expected {tokenType} but got {token.Type} at column {token.LocationInformation.TextSpan.Start}"
+            );
         }
 
-        private SyntaxToken AssertToken(TokenType tokenType)
+        return token;
+    }
+
+    private SyntaxToken ConsumeToken()
+    {
+        if (_currentTokenIndex >= _tokens.Count)
         {
-            if (_currentTokenIndex >= _tokens.Count)
+            throw new Exception("Cannot read past input length");
+        }
+
+        return _tokens[_currentTokenIndex++];
+    }
+
+    private DarwinExpression ParseExpression(int precedence = 0)
+    {
+        var left = ParsePrimary();
+        while (true)
+        {
+            var @operator = Current;
+            var operatorPrecedence = SyntaxRules.GetBinaryOperatorPrecedence(@operator.Type);
+            if (operatorPrecedence <= precedence)
             {
-                throw new Exception("Cannot read past input length");
+                break;
             }
 
-            var token = ConsumeToken();
-            if (token.Type != tokenType)
-            {
-                throw new Exception(
-                    $"Expected {tokenType} but got {token.Type} at column {token.LocationInformation.TextSpan.Start}");
-            }
-
-            return token;
+            ConsumeToken();
+            var right = ParseExpression(operatorPrecedence);
+            left = new BinaryExpression(left, @operator, right);
         }
 
-        private SyntaxToken ConsumeToken()
-        {
-            if (_currentTokenIndex >= _tokens.Count)
-            {
-                throw new Exception("Cannot read past input length");
-            }
+        return left;
+    }
 
-            return _tokens[_currentTokenIndex++];
+    private DarwinExpression ParsePrimary()
+    {
+        switch (Current.Type)
+        {
+            case TokenType.MinusSign:
+                return ParseUnaryExpression();
+            case TokenType.Number:
+                return ParseLiteral();
+            case TokenType.LeftParenthesis:
+                return ParseParenthesizedExpression();
+            default:
+                throw new ArgumentOutOfRangeException();
         }
+    }
 
-        private DarwinExpression ParseExpression(int precedence = 0)
+    private LiteralExpression ParseLiteral()
+    {
+        return new LiteralExpression(ConsumeToken());
+    }
+
+    private ParenthesizedExpression ParseParenthesizedExpression()
+    {
+        var leftParenthesisToken = ConsumeToken();
+        var expression = ParseExpression();
+        var rightParenthesisToken = AssertToken(TokenType.RightParenthesis);
+
+        return new ParenthesizedExpression(leftParenthesisToken, expression, rightParenthesisToken);
+    }
+
+    private DarwinExpression ParseUnaryExpression()
+    {
+        var @operator = ConsumeToken();
+        var expression = ParseExpression();
+
+        return new UnaryExpression(@operator, expression);
+    }
+
+    internal static class SyntaxRules
+    {
+        public static int GetBinaryOperatorPrecedence(TokenType type)
         {
-            var left = ParsePrimary();
-            while (true)
+            switch (type)
             {
-                var @operator = Current;
-                var operatorPrecedence = SyntaxRules.GetBinaryOperatorPrecedence(@operator.Type);
-                if (operatorPrecedence <= precedence)
-                {
-                    break;
-                }
+                case TokenType.DoubleAsteriskSign:
+                    return 3;
 
-                ConsumeToken();
-                var right = ParseExpression(operatorPrecedence);
-                left = new BinaryExpression(left, @operator, right);
-            }
+                case TokenType.AsteriskSign:
+                case TokenType.SlashSign:
+                    return 2;
 
-            return left;
-        }
-
-        private DarwinExpression ParsePrimary()
-        {
-            switch (Current.Type)
-            {
+                case TokenType.PlusSign:
                 case TokenType.MinusSign:
-                    return ParseUnaryExpression();
-                case TokenType.Number:
-                    return ParseLiteral();
-                case TokenType.LeftParenthesis:
-                    return ParseParenthesizedExpression();
+                    return 1;
+
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    return 0;
             }
-        }
-
-        private LiteralExpression ParseLiteral() => new LiteralExpression(ConsumeToken());
-
-        private ParenthesizedExpression ParseParenthesizedExpression()
-        {
-            var leftParenthesisToken = ConsumeToken();
-            var expression = ParseExpression();
-            var rightParenthesisToken = AssertToken(TokenType.RightParenthesis);
-            return new ParenthesizedExpression(leftParenthesisToken, expression, rightParenthesisToken);
-        }
-
-        internal static class SyntaxRules
-        {
-            public static int GetBinaryOperatorPrecedence(TokenType type)
-            {
-                switch (type)
-                {
-                    case TokenType.DoubleAsteriskSign:
-                        return 3;
-                    
-                    case TokenType.AsteriskSign:
-                    case TokenType.SlashSign:
-                        return 2;
-                    
-                    case TokenType.PlusSign:
-                    case TokenType.MinusSign:
-                        return 1;
-                    
-                    default:
-                        return 0;
-                }
-            }
-        }
-
-        private DarwinExpression ParseUnaryExpression()
-        {
-            var @operator = ConsumeToken();
-            var expression = ParseExpression();
-            return new UnaryExpression(@operator, expression);
         }
     }
 }

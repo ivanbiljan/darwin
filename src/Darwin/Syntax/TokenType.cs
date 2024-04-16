@@ -1,22 +1,21 @@
-﻿namespace Darwin.Syntax
+﻿namespace Darwin.Syntax;
+
+public enum TokenType
 {
-    public enum TokenType
-    {
-        Space,
-        Number,
-        PlusSign,
-        MinusSign,
-        AsteriskSign,
-        SlashSign,
-        LeftParenthesis,
-        RightParenthesis,
-        Dot,
-        Colon,
-        Semicolon,
-        Unexpected,
-        LeftCurlyBrace,
-        RightCurlyBrace,
-        DoubleAsteriskSign,
-        EndOfFile
-    }
+    Space,
+    Number,
+    PlusSign,
+    MinusSign,
+    AsteriskSign,
+    SlashSign,
+    LeftParenthesis,
+    RightParenthesis,
+    Dot,
+    Colon,
+    Semicolon,
+    Unexpected,
+    LeftCurlyBrace,
+    RightCurlyBrace,
+    DoubleAsteriskSign,
+    EndOfFile
 }

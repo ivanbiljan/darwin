@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Darwin\Darwin.csproj" />
+        <ProjectReference Include="..\Darwin\Darwin.csproj"/>
     </ItemGroup>
 
 </Project>

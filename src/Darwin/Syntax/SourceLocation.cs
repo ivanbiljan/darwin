@@ -1,37 +1,36 @@
 ﻿using System;
 
-namespace Darwin.Syntax
+namespace Darwin.Syntax;
+
+/// <summary>
+///     Represents a struct that contains a token's location information.
+/// </summary>
+public readonly struct SourceLocation
 {
     /// <summary>
-    ///     Represents a struct that contains a token's location information.
+    ///     Initializes a new instance of the <see cref="SourceLocation" /> struct with the specified line number and text
+    ///     span.
     /// </summary>
-    public readonly struct SourceLocation
+    /// <param name="line">The line number.</param>
+    /// <param name="textSpan">The text span.</param>
+    public SourceLocation(int line, TextSpan textSpan)
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="SourceLocation" /> struct with the specified line number and text
-        ///     span.
-        /// </summary>
-        /// <param name="line">The line number.</param>
-        /// <param name="textSpan">The text span.</param>
-        public SourceLocation(int line, TextSpan textSpan)
+        if (line < 0)
         {
-            if (line < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(line));
-            }
-
-            Line = line;
-            TextSpan = textSpan;
+            throw new ArgumentOutOfRangeException(nameof(line));
         }
 
-        /// <summary>
-        ///     Gets the line number the token is defined at.
-        /// </summary>
-        public int Line { get; }
-
-        /// <summary>
-        ///     Gets the token's text span.
-        /// </summary>
-        public TextSpan TextSpan { get; }
+        Line = line;
+        TextSpan = textSpan;
     }
+
+    /// <summary>
+    ///     Gets the line number the token is defined at.
+    /// </summary>
+    public int Line { get; }
+
+    /// <summary>
+    ///     Gets the token's text span.
+    /// </summary>
+    public TextSpan TextSpan { get; }
 }

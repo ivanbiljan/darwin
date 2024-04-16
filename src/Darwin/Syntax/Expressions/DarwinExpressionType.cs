@@ -1,10 +1,9 @@
-﻿namespace Darwin.Syntax
+﻿namespace Darwin.Syntax;
+
+internal enum DarwinExpressionType
 {
-    internal enum DarwinExpressionType
-    {
-        Unary,
-        Binary,
-        Literal,
-        Parenthesized
-    }
+    Unary,
+    Binary,
+    Literal,
+    Parenthesized
 }
