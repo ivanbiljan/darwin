@@ -2,8 +2,8 @@
 
 internal enum DarwinExpressionType
 {
-    Unary,
-    Binary,
-    Literal,
-    Parenthesized
+    Unary = 1,
+    Binary = 2,
+    Literal = 3,
+    Parenthesized = 4
 }

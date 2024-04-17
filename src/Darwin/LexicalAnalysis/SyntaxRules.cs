@@ -5,7 +5,7 @@ namespace Darwin.LexicalAnalysis;
 
 internal static class SyntaxRules
 {
-    public static Dictionary<string, TokenType> Keywords = new()
+    public static readonly Dictionary<string, TokenType> Keywords = new()
     {
         ["let"] = TokenType.LetKeyword,
         ["if"] = TokenType.IfKeyword,
