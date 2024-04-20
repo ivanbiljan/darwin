@@ -7,6 +7,11 @@ internal sealed record UnaryExpression(SyntaxToken Operator, DarwinExpression Ex
 {
     public override DarwinExpressionType Type => DarwinExpressionType.Unary;
 
+    public override T Accept<T>(Visitor<T> visitor)
+    {
+        throw new System.NotImplementedException();
+    }
+
     public override IEnumerable<SyntaxNode> GetChildren()
     {
         yield return Operator;

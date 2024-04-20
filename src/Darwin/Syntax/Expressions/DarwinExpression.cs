@@ -11,4 +11,6 @@ internal abstract record DarwinExpression : SyntaxNode
     ///     Gets the type of expression.
     /// </summary>
     public abstract DarwinExpressionType Type { get; }
+
+    public abstract T Accept<T>(Visitor<T> visitor);
 }
