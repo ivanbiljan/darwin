@@ -82,7 +82,10 @@ internal ref struct Lexer
 
                 if (_position >= _input.Length)
                 {
-                    ProblemReporter.AddError(_lineNumber, "Unterminated string");
+                    DiagnosticBag.AddError(
+                        new SourceLocation(_lineNumber, TextSpan.FromBounds(start, _position)),
+                        "Unterminated string"
+                    );
 
                     return null;
                 }
