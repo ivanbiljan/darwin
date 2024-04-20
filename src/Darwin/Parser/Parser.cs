@@ -58,7 +58,18 @@ internal sealed class Parser
 
     private DarwinExpression ParseExpression(int precedence = 0)
     {
-        var left = ParsePrimary();
+        /***
+         * The grammar is as follows:
+         * expression => equality (==, !=)
+         * equality => comparison (== | !=) comparison
+         * comparison => term (<, >=, >, >=) term
+         * term => factor (- | +) factor
+         * factor => unary (* | /) unary
+         * unary => ! unary | primary
+         * primary => numeric literals, groupings
+         */
+        
+        var left = ParsePrimaryExpression();
         while (true)
         {
             var @operator = Current;
@@ -76,19 +87,15 @@ internal sealed class Parser
         return left;
     }
 
-    private DarwinExpression ParsePrimary()
+    private DarwinExpression ParsePrimaryExpression()
     {
-        switch (Current.Type)
+        return Current.Type switch
         {
-            case TokenType.MinusSign:
-                return ParseUnaryExpression();
-            case TokenType.Number:
-                return ParseLiteral();
-            case TokenType.LeftParenthesis:
-                return ParseParenthesizedExpression();
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
+            TokenType.MinusSign => ParseUnaryExpression(),
+            TokenType.Number => ParseLiteral(),
+            TokenType.LeftParenthesis => ParseParenthesizedExpression(),
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 
     private LiteralExpression ParseLiteral()
@@ -105,7 +112,7 @@ internal sealed class Parser
         return new ParenthesizedExpression(leftParenthesisToken, expression, rightParenthesisToken);
     }
 
-    private DarwinExpression ParseUnaryExpression()
+    private UnaryExpression ParseUnaryExpression()
     {
         var @operator = ConsumeToken();
         var expression = ParseExpression();

@@ -23,14 +23,24 @@ internal static class SyntaxRules
         switch (type)
         {
             case TokenType.DoubleAsteriskSign:
-                return 3;
+                return 5;
 
             case TokenType.AsteriskSign:
             case TokenType.SlashSign:
-                return 2;
+                return 4;
 
             case TokenType.PlusSign:
             case TokenType.MinusSign:
+                return 3;
+
+            case TokenType.LessThan:
+            case TokenType.LessThanOrEqual:
+            case TokenType.GreaterThan:
+            case TokenType.GreaterThanOrEqual:
+                return 2;
+
+            case TokenType.EqualsEquals:
+            case TokenType.BangEquals:
                 return 1;
 
             default:
