@@ -1,6 +1,6 @@
 ﻿namespace Darwin.Syntax.Expressions;
 
-internal sealed class SyntaxTreePrinter : Visitor<string>
+internal sealed class SyntaxTreePrinter : SyntaxVisitor<string>
 {
     public string VisitUnaryExpression(UnaryExpression unaryExpression)
     {
@@ -18,7 +18,7 @@ internal sealed class SyntaxTreePrinter : Visitor<string>
         {
             return "null";
         }
-        
+
         return literalExpression.SyntaxToken.Value.ToString();
     }
 

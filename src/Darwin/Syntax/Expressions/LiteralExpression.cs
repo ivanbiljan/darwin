@@ -7,9 +7,9 @@ internal sealed record LiteralExpression(SyntaxToken SyntaxToken) : DarwinExpres
 {
     public override DarwinExpressionType Type => DarwinExpressionType.Literal;
 
-    public override T Accept<T>(Visitor<T> visitor)
+    public override T Accept<T>(SyntaxVisitor<T> syntaxVisitor)
     {
-        return visitor.VisitLiteralExpression(this);
+        return syntaxVisitor.VisitLiteralExpression(this);
     }
 
     public override IEnumerable<SyntaxNode> GetChildren()

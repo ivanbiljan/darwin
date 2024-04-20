@@ -2,7 +2,7 @@
 
 namespace Darwin.Syntax;
 
-internal interface Visitor<out T>
+internal interface SyntaxVisitor<out T>
 {
     T VisitUnaryExpression(UnaryExpression unaryExpression);
 

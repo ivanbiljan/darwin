@@ -11,9 +11,9 @@ internal sealed record BinaryExpression(
 {
     public override DarwinExpressionType Type => DarwinExpressionType.Binary;
 
-    public override T Accept<T>(Visitor<T> visitor)
+    public override T Accept<T>(SyntaxVisitor<T> syntaxVisitor)
     {
-        return visitor.VisitBinaryExpression(this);
+        return syntaxVisitor.VisitBinaryExpression(this);
     }
 
     public override IEnumerable<SyntaxNode> GetChildren()

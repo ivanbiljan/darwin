@@ -30,12 +30,12 @@ internal ref struct Lexer
             {
                 continue;
             }
-            
+
             if (currentToken is {Type: TokenType.EndOfFile})
             {
                 break;
             }
-            
+
             tokens.Add(currentToken);
         }
 
@@ -89,9 +89,9 @@ internal ref struct Lexer
 
                     return null;
                 }
-                
+
                 _position++;
-                
+
                 var token = new SyntaxToken(
                     TokenType.StringLiteral,
                     new SourceLocation(_lineNumber, TextSpan.FromBounds(start, _position)),
@@ -110,7 +110,7 @@ internal ref struct Lexer
 
                 var keywordOrIdentifier = _input[start.._position].ToString();
                 var tokenType = SyntaxRules.Keywords.GetValueOrDefault(keywordOrIdentifier, TokenType.Identifier);
-                
+
                 return new SyntaxToken(
                     tokenType,
                     new SourceLocation(_lineNumber, TextSpan.FromBounds(start, _position)),

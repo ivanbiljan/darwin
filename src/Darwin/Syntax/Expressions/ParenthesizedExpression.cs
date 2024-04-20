@@ -11,9 +11,9 @@ internal sealed record ParenthesizedExpression(
 {
     public override DarwinExpressionType Type => DarwinExpressionType.Parenthesized;
 
-    public override T Accept<T>(Visitor<T> visitor)
+    public override T Accept<T>(SyntaxVisitor<T> syntaxVisitor)
     {
-        return visitor.VisitParenthesizedExpression(this);
+        return syntaxVisitor.VisitParenthesizedExpression(this);
     }
 
     public override IEnumerable<SyntaxNode> GetChildren()

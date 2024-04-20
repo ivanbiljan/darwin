@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Darwin.LexicalAnalysis;
 
@@ -18,7 +17,7 @@ internal static class SyntaxRules
         ["bool"] = TokenType.BooleanKeyword,
         ["number"] = TokenType.NumberKeyword
     };
-    
+
     public static int GetBinaryOperatorPrecedence(TokenType type)
     {
         switch (type)
@@ -37,5 +36,5 @@ internal static class SyntaxRules
             default:
                 return 0;
         }
-    }    
+    }
 }
