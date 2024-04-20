@@ -1,5 +1,5 @@
 ﻿using System;
-using Darwin.LexicalAnalysis;
+using Darwin.Parser;
 using Xunit;
 
 namespace Darwin.UnitTests.Syntax;

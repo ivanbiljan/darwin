@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Darwin.Diagnostics;
 
-namespace Darwin.LexicalAnalysis;
+namespace Darwin.Parser;
 
 internal ref struct Lexer
 {

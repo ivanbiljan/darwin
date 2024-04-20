@@ -1,5 +1,5 @@
 ﻿using System;
-using Darwin.LexicalAnalysis;
+using Darwin.Parser;
 using Darwin.Syntax;
 using Darwin.Syntax.Expressions;
 

@@ -4,7 +4,7 @@ using System.Linq;
 using Darwin.Syntax;
 using Darwin.Syntax.Expressions;
 
-namespace Darwin.LexicalAnalysis;
+namespace Darwin.Parser;
 
 internal sealed class Parser
 {

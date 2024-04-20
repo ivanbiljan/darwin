@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Darwin.LexicalAnalysis;
+namespace Darwin.Parser;
 
 internal abstract record SyntaxNode
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Darwin.LexicalAnalysis;
+namespace Darwin.Parser;
 
 /// <summary>
 ///     Represents a struct that contains a token's location information.

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Darwin.LexicalAnalysis;
+namespace Darwin.Parser;
 
 internal static class SyntaxRules
 {

@@ -1,5 +1,5 @@
 ﻿using System;
-using Darwin.LexicalAnalysis;
+using Darwin.Parser;
 
 namespace Darwin.Interactive;
 
@@ -17,7 +17,7 @@ internal class Program
 
             var lexer = new Lexer(input);
             var tokens = lexer.TokenizeInput();
-            var parser = new Parser(tokens);
+            var parser = new Parser.Parser(tokens);
 
             var tree = parser.Parse();
             Console.WriteLine(tree.Root);
