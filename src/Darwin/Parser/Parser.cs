@@ -67,6 +67,8 @@ internal sealed class Parser
          * factor => unary (* | /) unary
          * unary => ! unary | primary
          * primary => numeric literals, groupings
+         *
+         * The order is used to define the precedence of binary operators
          */
         
         var left = ParsePrimaryExpression();
